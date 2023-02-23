@@ -48,6 +48,9 @@ namespace bwtk
         /// the new file (if file opening was successful)
         void setLogFile(const std::string& filename);
 
+        /// @brief Closes log file for default log handler.
+        void closeLogFile();
+
         class Log
         {
         public:
