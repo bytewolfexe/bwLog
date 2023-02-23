@@ -2,6 +2,9 @@
 #include "string_builder.hpp"
 #include <vector>
 #include <mutex>
+#include <algorithm>
+
+// TODO this is a mess. Gotta do some spring cleaning.
 
 #define PRIMITIVE_OVERLOAD(type) Log& Log::operator<<(type value) {log_entry.message.write(value);return *this;}
 
@@ -29,64 +32,54 @@ namespace bwtk
         std::mutex callbacks_mutex;
         std::vector<LogCallbackEntry> callbacks;
 
+        void enableDefaultCallback()
+        {
+
+        }
+
         bool has_callback(LogCallback cb)
         {
             // Checking if given callback is not already registered
-            for(auto& l : callbacks)
-            {
-                if(l.callback == cb)
-                {
-                    return true;
-                }
-            }
-            return false;
+            bool result = std::any_of(callbacks.begin(), callbacks.end(),
+                        [&](const LogCallbackEntry& e) {return cb == e.callback;});
+
+            return result;
         }
 
-        void addCallback(LogCallback cb)
+        void safe_add_callback(LogSeverity min, LogSeverity max, LogCallback cb)
         {
-            if(has_callback(cb))
-            {
-                return;
-            }
+            std::lock_guard guard(callbacks_mutex);
 
-            callbacks.push_back({LogSeverity::Debug, LogSeverity::Error, cb});
-        }
-
-        void addLevelCallback(LogSeverity level, LogCallback cb)
-        {
-            if(has_callback(cb))
-            {
-                return;
-            }
-
-            callbacks.push_back({level, level, cb});
-        }
-
-        void addCallbackMin(LogSeverity min, LogCallback cb)
-        {
-            if(has_callback(cb))
-            {
-                return;
-            }
-            callbacks.push_back({min, LogSeverity::Error, cb});
-        }
-
-        void addCallbackMax(LogSeverity max, LogCallback cb)
-        {
-            if(has_callback(cb))
-            {
-                return;
-            }
-            callbacks.push_back({LogSeverity::Debug, max, cb});
-        }
-
-        void addCallbackRanged(LogSeverity min, LogSeverity max, LogCallback cb)
-        {
             if(has_callback(cb))
             {
                 return;
             }
             callbacks.push_back({min, max, cb});
+        }
+
+        void addCallback(LogCallback cb)
+        {
+            safe_add_callback(LogSeverity::Debug, LogSeverity::Error, cb);
+        }
+
+        void addLevelCallback(LogSeverity level, LogCallback cb)
+        {
+            safe_add_callback(level, level, cb);
+        }
+
+        void addCallbackMin(LogSeverity min, LogCallback cb)
+        {
+            safe_add_callback(min, LogSeverity::Error, cb);
+        }
+
+        void addCallbackMax(LogSeverity max, LogCallback cb)
+        {
+            safe_add_callback(LogSeverity::Debug, max, cb);
+        }
+
+        void addCallbackRanged(LogSeverity min, LogSeverity max, LogCallback cb)
+        {
+            safe_add_callback(min, max, cb);
         }
 
 
