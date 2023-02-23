@@ -19,7 +19,7 @@ namespace bwtk::log
     std::string TimePoint::str() const
     {
         std::stringstream st;
-        st << hh << ':' << mm << ':' << ss;
+        st << (short)hh << ':' << (short)mm << ':' << (short)ss;
         return st.str();
     }
 }

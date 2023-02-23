@@ -125,15 +125,20 @@ namespace bwtk
         void publish()
         {
             std::lock_guard lock(callbacks_mutex);
+
             std::string msg = {log_entry.message.get()};
+            log_entry.tp = TimePoint();
 
             for(auto& l : callbacks)
             {
                 if(l.min_level <= log_entry.severity && l.max_level >= log_entry.severity)
                 {
-                    l.callback(log_entry.severity, log_entry.tp, std::string());
+                    l.callback(log_entry.severity, log_entry.tp, msg);
                 }
             }
+
+            // Cleanup
+            log_entry.message.clear();
         }
 
         Log::Log(LogSeverity severity)
@@ -190,7 +195,7 @@ namespace bwtk
                     break;
             }
 
-            message << t.str() << " ";
+            message << t.str() << " : ";
             message << msg;
 
             if(log_filter <= severity)
