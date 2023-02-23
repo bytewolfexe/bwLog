@@ -3,6 +3,11 @@
 
 #include <string>
 
+#define bwLogDEBUG bwtk::log::Log(bwtk::log::LogSeverity::Debug)
+#define bwLogINFO bwtk::log::Log(bwtk::log::LogSeverity::Info)
+#define bwLogWARN bwtk::log::Log(bwtk::log::LogSeverity::Warning)
+#define bwLogERROR bwtk::log::Log(bwtk::log::LogSeverity::Error)
+
 namespace bwtk
 {
     namespace log

@@ -203,6 +203,12 @@ namespace bwtk
                     log_file << output << '\n';
                 }
             }
+
+            // Error is always active!
+            if(severity == LogSeverity::Error)
+            {
+                std::abort();
+            }
         }
     }
 }
