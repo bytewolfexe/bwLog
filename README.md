@@ -50,3 +50,63 @@ as target name, so it's always good to have it in separate subfolder
 
 If you don't want to use (or generally just don't use)
 CMake, the process of adding depends on your build toolchain, IDE, ...
+Generally, you want to add `bwLog/include` into
+your project's include paths, and `bwLog/src` into
+project's source files. 
+
+
+### Basic usage
+
+To enable default log handler, use
+
+```c++
+bwtk::log::enableDefaultHandler();
+```
+
+If you want to use custom handler function, you firstly
+need to create a `LogCallback` function.
+Example signature of `LogCallback` looks like this:
+
+```c++
+void my_callback(bwtk::log::LogSeverity severity, const bwtk::log::TimePoint& tp, const std::string& message);
+```
+
+Once you implement your log callback, simply add it 
+into bwLog with:
+
+```c++
+bwtk::log::addCallback(my_callback);
+```
+
+Where `severity` represents log's level, `tp` 
+represents TimePoint structure containing information
+about when the log was created (currently only time),
+and `message` contains the log's message, stored
+as standard C++ string.
+
+In order to invoke new Log, you can use:
+
+```c++
+using namespace bwtk;
+log::Log(log::LogSeverity::Info) << "Hello world!";
+```
+
+This will create new info log containing with message
+'Hello world!'. If default log callback is enabled, you should see following
+message printed in console:
+
+```
+[INFO] 20:10:33: Hello world!
+```
+
+Note that your time stamp will be probably different from example.
+
+If you don't want to print such a lengthy string all the time,
+you can use built-in macro:
+
+```c++
+bwLogINFO << "Hello world!";
+```
+
+Which will output same output as previous example
+(if default log handler is used!)
