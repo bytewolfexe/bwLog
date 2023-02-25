@@ -15,4 +15,4 @@ set(
 
 target_sources(bwLog PRIVATE ${BWTK_LOG_SOURCE_FILES} ${BWTK_LOG_HEADER_FILES})
 
-target_include_directories(bwLog PUBLIC include)
+target_include_directories(bwLog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

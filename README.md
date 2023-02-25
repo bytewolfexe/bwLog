@@ -43,7 +43,8 @@ target_link_libraries(super_cool_project bwLog)
 ```
 
 Note that CMake may confuse bwLog as folder name and bwLog
-as target name, so it's always good to have it in separate subfolder
+as target name, so it's always good to have bwLog
+stored in separate subfolder
 (in this case, /lib/)
 
 ### Getting started (no CMake??)
@@ -108,5 +109,5 @@ you can use built-in macro:
 bwLogINFO << "Hello world!";
 ```
 
-Which will output same output as previous example
-(if default log handler is used!)
+Which will output same message as previous example
+(if default log handler is enabled!)
