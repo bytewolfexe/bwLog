@@ -42,6 +42,8 @@ namespace bwtk
         {
             c = 0;
         }
+        writer_.clear();
+        writer_.rdbuf()->pubsetbuf(buffer_, S);
     }
 
     template <size_t S>
